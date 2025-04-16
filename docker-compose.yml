@@ -1,0 +1,27 @@
+services:
+  MYSERVICE:
+    image: registry.sccs.swarthmore.edu/cs77-s25/MYSERVICE/MYSERVICE:latest
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    environment:
+    #env_file:
+    #  - .env
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.docker.network=traefik"
+        - "traefik.http.routers.MYSERVICE.entrypoints=https"
+        - "traefik.http.routers.MYSERVICE.rule=Host(`MYSERVICE.sccs.swarthmore.edu`)"
+        - "traefik.http.routers.MYSERVICE.tls=true"
+        - "traefik.http.routers.MYSERVICE.tls.certresolver=letsEncrypt"
+        - "traefik.http.services.MYSERVICE.loadbalancer.server.port=5000"
+    networks:
+      - internal
+      - traefik
+
+networks:
+  internal:
+
+  traefik:
+    external: true
